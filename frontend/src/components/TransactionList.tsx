@@ -99,4 +99,4 @@ const TransactionList: React.FC = () => {
   );
 };
 
-export default TransactionList;
+export default React.memo(TransactionList);
