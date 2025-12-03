@@ -11,6 +11,7 @@ from app.db.base import Base
 from app.db.session import engine
 from app.models.transaction import Transaction
 from app.models.category import Category
+from app.models.tag import Tag
 
 from app.core.config import settings
 
@@ -31,7 +32,7 @@ def seed_db():
 
     try:
         print("Clearing existing data...")
-        db.execute(text("TRUNCATE TABLE transactions, categories RESTART IDENTITY CASCADE"))
+        db.execute(text("TRUNCATE TABLE transactions, categories, tags, transaction_tags RESTART IDENTITY CASCADE"))
         db.commit()
 
         print("Loading seed data from centralized JSON files...")
@@ -51,7 +52,19 @@ def seed_db():
 
         category_name_to_id_map = {cat_name: category_obj.id for cat_name, category_obj in category_objects.items()}
 
-        for data in transactions_data:
+        print("Creating tags...")
+        tag_names = ["work", "travel", "reimbursable", "recurring", "urgent", "personal"]
+        tag_objects = {}
+        for tag_name in tag_names:
+            tag = Tag(name=tag_name)
+            db.add(tag)
+            tag_objects[tag_name] = tag
+        db.commit()
+
+        for tag_name, tag_obj in tag_objects.items():
+            db.refresh(tag_obj)
+
+        for idx, data in enumerate(transactions_data):
             transaction_data = {
                 "description": data["description"],
                 "amount": data["amount"],
@@ -61,6 +74,16 @@ def seed_db():
                 "date": datetime.fromisoformat(data["date"])
             }
             transaction = Transaction(**transaction_data)
+
+            if idx % 3 == 0:
+                transaction.tags.append(tag_objects["work"])
+            if idx % 4 == 0:
+                transaction.tags.append(tag_objects["reimbursable"])
+            if idx % 5 == 0:
+                transaction.tags.append(tag_objects["recurring"])
+            if data["type"] == "debit" and idx % 7 == 0:
+                transaction.tags.append(tag_objects["travel"])
+
             db.add(transaction)
         db.commit()
         print("Database seeded successfully.")

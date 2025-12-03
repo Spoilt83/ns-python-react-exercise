@@ -16,3 +16,4 @@ class Transaction(Base):
     category_rel = relationship("Category", back_populates="transactions")
     date = Column(DateTime(timezone=True), server_default=func.now())
     user_id = Column(Integer, index=True)
+    tags = relationship("Tag", secondary="transaction_tags", back_populates="transactions")
