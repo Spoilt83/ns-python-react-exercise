@@ -16,7 +16,7 @@ def get_transaction(db: Session, transaction_id: int):
 
 
 def get_transactions(db: Session, skip: int = 0, limit: int = 100) -> List[Transaction]:
-    return db.query(Transaction).offset(skip).limit(limit).all()
+    return db.query(Transaction).options(joinedload(Transaction.category_rel)).offset(skip).limit(limit).all()
 
 
 def create_transaction(db: Session, transaction: TransactionCreate, user_id: int):

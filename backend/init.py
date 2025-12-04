@@ -8,6 +8,7 @@ from app.db.base import Base
 from app.db.session import engine
 from app.models.transaction import Transaction
 from app.models.category import Category
+from app.models.tag import Tag
 
 def init_db():
     print("Creating database tables...")

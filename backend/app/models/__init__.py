@@ -1,1 +1,1 @@
-from . import category, transaction  # noqa: F401
+from . import category, transaction, tag  # noqa: F401

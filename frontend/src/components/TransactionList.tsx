@@ -22,7 +22,9 @@ const TransactionList: React.FC = () => {
     const fetchTransactions = async () => {
       try {
         setLoading(true);
-        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        const backendUrl = import.meta.env.VITE_BACKEND_URL === 'http://backend:8000'
+          ? 'http://localhost:8000'
+          : (import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000');
         const response = await fetch(`${backendUrl}/api/v1/transactions/`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -99,4 +101,4 @@ const TransactionList: React.FC = () => {
   );
 };
 
-export default TransactionList;
+export default React.memo(TransactionList);
