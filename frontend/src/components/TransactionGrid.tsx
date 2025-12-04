@@ -32,7 +32,9 @@ const TransactionGrid: React.FC = () => {
     const fetchTransactions = async () => {
       try {
         setLoading(true);
-        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        const backendUrl = import.meta.env.VITE_BACKEND_URL === 'http://backend:8000'
+          ? 'http://localhost:8000'
+          : (import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000');
         const url = `${backendUrl}/api/v1/transactions/grid?page=${page}&size=${pageSize}&sort_by=${sortBy}&sort_order=${sortOrder}`;
         const response = await fetch(url);
         if (!response.ok) {
