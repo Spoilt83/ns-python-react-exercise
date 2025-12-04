@@ -1,14 +1,8 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Table
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
-
-transaction_tags = Table(
-    'transaction_tags',
-    Base.metadata,
-    Column('transaction_id', Integer, ForeignKey('transactions.id'), primary_key=True),
-    Column('tag_id', Integer, ForeignKey('tags.id'), primary_key=True)
-)
+from app.models.transaction import transaction_tags
 
 
 class Tag(Base):

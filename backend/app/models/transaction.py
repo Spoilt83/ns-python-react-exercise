@@ -1,8 +1,15 @@
-from sqlalchemy import NUMERIC, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy import NUMERIC, Column, DateTime, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from app.db.base import Base
+
+transaction_tags = Table(
+    'transaction_tags',
+    Base.metadata,
+    Column('transaction_id', Integer, ForeignKey('transactions.id'), primary_key=True),
+    Column('tag_id', Integer, ForeignKey('tags.id'), primary_key=True)
+)
 
 
 class Transaction(Base):
@@ -16,4 +23,4 @@ class Transaction(Base):
     category_rel = relationship("Category", back_populates="transactions")
     date = Column(DateTime(timezone=True), server_default=func.now())
     user_id = Column(Integer, index=True)
-    tags = relationship("Tag", secondary="transaction_tags", back_populates="transactions")
+    tags = relationship("Tag", secondary=transaction_tags, back_populates="transactions")
